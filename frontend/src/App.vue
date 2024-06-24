@@ -6,9 +6,12 @@
       </template>
 
      <v-app-bar-title>Magazine Database</v-app-bar-title>
+
+     <Add />
   </v-app-bar>
     
     <v-main>
+      
 
     <v-divider></v-divider>
     <v-card-title class="text-h6">VIEW DATABASE ENTRIES</v-card-title>
@@ -45,74 +48,7 @@
           <v-data-table :items="results_array"></v-data-table>
         </v-sheet>
       </v-col>
-    </v-row>
-
-    <v-card-title class="text-h6">ADD ENTRY</v-card-title>
-    <v-row>
-      <v-col order="1">
-        <v-sheet class="pa-2 ma-2">
-          <v-text-field v-model="magazine_name" label="Magazine Name"></v-text-field>
-        </v-sheet>
-      </v-col>
-
-      <v-col order="2">
-        <v-sheet class="pa-2 ma-2">
-          <v-text-field v-model="month" label="Month of Issue"></v-text-field>
-        </v-sheet>
-      </v-col>
-
-      <v-col order="3">
-        <v-sheet class="pa-2 ma-2">
-          <v-text-field v-model="year" label="Year of Issue"></v-text-field>
-        </v-sheet>
-      </v-col>
-    
-
-    <v-col order="4">
-        <v-sheet class="pa-2 ma-2">
-          <v-combobox
-        v-model="select_airline"
-        :items="airline_list"
-        item-value="airline_id"
-        item-title="airline_name"
-        :return-object="true"
-        clearable
-      >
-      </v-combobox>
-        </v-sheet>
-      </v-col>
-
-      <v-col order="5">
-        <v-sheet class="pa-2 ma-2">
-          <v-combobox
-        v-model="select_country"
-        :items="country_list"
-        item-value="id"
-        item-title="name"
-        :return-object="true"
-        clearable
-      >
-      </v-combobox>
-        </v-sheet>
-      </v-col>
-
-      <v-col order="5">
-        <v-sheet class="pa-2 ma-2">
-          <v-btn
-          size="large" 
-          @click="addEntry">
-        ADD ENTRY
-        </v-btn>
-        </v-sheet>
-      </v-col>
-
-    </v-row>
-    <v-col order="5">
-        <v-sheet class="pa-2 ma-2">
-          <v-card-title class="text-subtitle-2">{{status}}</v-card-title>
-        </v-sheet>
-      </v-col>
-    
+    </v-row>    
   </v-main>
   
 
@@ -163,18 +99,22 @@
     }); 
   }
 
-  function addEntry(){
-    status.value = "Your entry has been added to the database. You can use the query tool above to find your entry."
-    console.log(`You just added the country: ${magazine_name.value }.`)
+  // function addEntry(){
+  //   status.value = "Your entry has been added to the database. You can use the query tool above to find your entry."
+  //   console.log(`You just added the country: ${magazine_name.value }.`)
 
-    axios.post('http://localhost:3003/entry', {magazine_name: magazine_name.value, month : month.value, year: year.value, airline_id : select_airline.value.airline_id, country_id : select_country.value.id}
-    )
-    .then(function (response) {
-      console.log(response);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });  
+  //   axios.post('http://localhost:3003/entry', {magazine_name: magazine_name.value, month : month.value, year: year.value, airline_id : select_airline.value.airline_id, country_id : select_country.value.id}
+  //   )
+  //   .then(function (response) {
+  //     console.log(response);
+  //   })
+  //   .catch(function (error) {
+  //     console.log(error);
+  //   });  
+  // }
+
+  function pressed(){
+    console.log("You just pressed something!")
   }
   
 </script>

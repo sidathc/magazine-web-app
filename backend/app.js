@@ -25,6 +25,13 @@ app.get('/airlines', async (req, res) => {
     res.send(airlines)
 })
 
+app.get('/months', async (req, res) => {
+    // get countries from pg
+    months = await get_months();
+    res.header("Access-Control-Allow-Origin", "*");  
+    res.send(months)
+})
+
 app.get('/funny', async (req, res) => {
     res.header("Access-Control-Allow-Origin", "*"); 
     // console.log(req.query.country_id);
@@ -45,8 +52,32 @@ app.post('/entry', async (req, res) => {
     res.send("Successful")
 })
 
+app.post('/entry2', async (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*"); 
+    var magazine_name = req.body.magazine_name
+    var month = req.body.month
+    var year = req.body.year
+    var airline_id = req.body.airline_id
+    var country_id = await get_country_id(airline_id)
+    country_id = parseInt(country_id.replace(/\D/g,''))
+    query2(magazine_name, month, year, airline_id, country_id)    
+    res.send("Successful")
+})
+
+async function get_country_id(airline_id)  {
+    query_name = 'SELECT country_id FROM public.airline WHERE airline_id = ' + airline_id
+    json_ver = connectToSQL(query_name);
+    return json_ver
+}
+
 async function get_countries()  {
     query_name = 'SELECT * FROM countries ORDER BY name'
+    json_ver = connectToSQL(query_name);
+    return json_ver
+}
+
+async function get_months()  {
+    query_name = 'SELECT * FROM month ORDER BY id'
     json_ver = connectToSQL(query_name);
     return json_ver
 }
@@ -70,6 +101,7 @@ async function connectToSQL(query_name)  {
 
     result = await client.query(query_name);
     var json_ver = JSON.stringify(result.rows);
+
     return json_ver;
 }
 
