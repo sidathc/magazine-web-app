@@ -8,8 +8,12 @@
      <v-app-bar-title>Magazine Database</v-app-bar-title>
 
      <Add />
+     <AddAirline />
+     <AddCountry />
+     <DeleteEntry />
+     
   </v-app-bar>
-    
+  
     <v-main>
       
 
@@ -45,6 +49,7 @@
     <v-row>
       <v-col order="5">
         <v-sheet class="pa-2 ma-2">
+          <!-- {{ results_array }} -->
           <v-data-table :items="results_array"></v-data-table>
         </v-sheet>
       </v-col>
@@ -97,24 +102,6 @@
     .catch(function (error) {
       console.log(error);
     }); 
-  }
-
-  // function addEntry(){
-  //   status.value = "Your entry has been added to the database. You can use the query tool above to find your entry."
-  //   console.log(`You just added the country: ${magazine_name.value }.`)
-
-  //   axios.post('http://localhost:3003/entry', {magazine_name: magazine_name.value, month : month.value, year: year.value, airline_id : select_airline.value.airline_id, country_id : select_country.value.id}
-  //   )
-  //   .then(function (response) {
-  //     console.log(response);
-  //   })
-  //   .catch(function (error) {
-  //     console.log(error);
-  //   });  
-  // }
-
-  function pressed(){
-    console.log("You just pressed something!")
   }
   
 </script>

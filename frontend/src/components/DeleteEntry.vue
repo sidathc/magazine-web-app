@@ -4,17 +4,17 @@
         <v-btn
         v-bind="activatorProps"
         color="surface-variant"
-        text="Add Entry"
+        text="Delete Entry"
         variant="flat"
         ></v-btn>
     </template>
 
     <template v-slot:default="{ isActive }">
-        <v-card title="Add New Entry">
+        <v-card title="Delete Entry">
         <v-card-text>
         <v-form v-model="valid">
         
-            Please enter all of the following fields to enter a new entry.
+            Please enter all of the following fields to delete an entry.
 
             <v-text-field v-model = magazine_name label="Name of Magazine"></v-text-field>
 
@@ -53,7 +53,7 @@
             ></v-btn>
 
             <v-btn
-            text="SEND"
+            text="Delete"
             @click="send"
             ></v-btn>
 
@@ -96,14 +96,14 @@
   })
 
     function send(){
-        console.log("Sent!")
-        console.log(airline_select.value)
-        status.value = "Your entry has been successfully added!"
+        // console.log("Sent!")
+        // console.log(airline_select.value)
+        status.value = "Your entry has been successfully deleted!"
 
         // status.value = "Your entry has been added to the database. You can use the query tool above to find your entry."
         // console.log(`You just added the country: ${magazine_name.value }.`)
        
-        axios.post('http://localhost:3003/entry2', {magazine_name: magazine_name.value, month : month_select.value.id, year: year_of_issue.value, airline_id : airline_select.value.airline_id}
+        axios.post('http://localhost:3003/delete', {magazine_name: magazine_name.value, month : month_select.value.id, year: year_of_issue.value, airline_id : airline_select.value.airline_id}
         )
         .then(function (response) {
         console.log(response);
