@@ -72,7 +72,8 @@ app.post('/entry2', async (req, res) => {
     var year = req.body.year
     var airline_id = req.body.airline_id
     var country_id = await get_country_id(airline_id)
-    country_id = parseInt(country_id.replace(/\D/g,''))
+    country_id = country_id[0]['country_id']
+    country_id = parseInt(country_id)
     query2(magazine_name, month, year, airline_id, country_id)    
     res.send("Successful")
 })
@@ -84,7 +85,9 @@ app.post('/delete', async (req, res) => {
     var year = req.body.year
     var airline_id = req.body.airline_id
     var country_id = await get_country_id(airline_id)
-    country_id = parseInt(country_id.replace(/\D/g,''))
+    country_id = country_id[0]['country_id']
+    country_id = parseInt(country_id)
+    console.log(magazine_name, month, year, airline_id, country_id)
     // console.log(magazine_name, month,year)
     delete_entry(magazine_name, month, year); 
     res.send("Successful")
@@ -170,7 +173,13 @@ async function connectToSQL(query_name)  {
 }
 
 async function query(country_id) {
-    query_name = 'SELECT * FROM magazine WHERE country_id = ' + country_id
+    if (country_id == 25){
+        query_name = 'SELECT * FROM magazine'
+    }
+    else{
+        query_name = 'SELECT * FROM magazine WHERE country_id = ' + country_id
+    }
+
     const client = new Client({
         user: 'postgres',
         password: 'Tiggerch',
@@ -194,15 +203,15 @@ async function query(country_id) {
         }
     }
 
-    // for (var i=0; i < what.length; i++){
-    //     var airline_name = await find_airline(what[i]['airline_id'])
-    //     what[i]['airline_id'] = airline_name
-    // }
+    for (var i=0; i < what.length; i++){
+        var airline_name = await find_airline(what[i]['airline_id'])
+        what[i]['airline_id'] = airline_name
+    }
 
-    // for (var i=0; i < what.length; i++){
-    //     var country_name = await find_country(what[i]['country_id'])
-    //     what[i]['country_id'] = country_name
-    // }
+    for (var i=0; i < what.length; i++){
+        var country_name = await find_country(what[i]['country_id'])
+        what[i]['country_id'] = country_name
+    }
 
     // find_airline(what[0]['airline_id'])
 

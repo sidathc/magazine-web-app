@@ -3,7 +3,6 @@
     <template v-slot:activator="{ props: activatorProps }">
         <v-btn
         v-bind="activatorProps"
-        color="surface-variant"
         text="Add Entry"
         variant="flat"
         ></v-btn>
@@ -14,12 +13,10 @@
         <v-card-text>
         <v-form v-model="valid">
         
-            Please enter all of the following fields to enter a new entry.
-
-            <v-text-field v-model = magazine_name label="Name of Magazine"></v-text-field>
+            <v-text-field v-model = data.magazine_name label="Name of Magazine"></v-text-field>
 
             <v-combobox
-                v-model = "month_select"
+                v-model = "data.month_select"
                 label="Month of Issue"
                 :items="month_list"
                 item-value="id"
@@ -28,9 +25,9 @@
                 clearable
             ></v-combobox>
 
-            <v-text-field v-model = year_of_issue label="Year of Issue"></v-text-field>
+            <v-text-field v-model = data.year_of_issue label="Year of Issue"></v-text-field>
             <v-combobox
-                v-model="airline_select"
+                v-model="data.airline_select"
                 :items="airline_list"
                 label="Airline"
                 item-value="airline_id"
@@ -48,16 +45,9 @@
             <v-spacer></v-spacer>
 
             <v-btn
-            text="Close Dialog"
-            @click="isActive.value = false"
-            ></v-btn>
-
-            <v-btn
-            text="SEND"
+            text="Add"
             @click="send"
             ></v-btn>
-
-            
 
         </v-card-actions>
         </v-card>
@@ -66,23 +56,27 @@
   </template>
   
   <script setup>
-    //
     import { ref, onMounted} from 'vue'
     import axios from 'axios'
+    import useVuelidate from '@vuelidate/core';
+    import {minValue, required, maxValue} from '@vuelidate/validators';
 
     // creating reactive variables 
-    var magazine_name = ref('')
-    var month_of_issue = ref('')
-    var year_of_issue = ref('')
     var airline_list = ref([])
     var country_list = ref([])
     var month_list = ref([])
-    var country_select = ref('')
-    var airline_select = ref('')
-    var month_select = ref('')
     var status = ref('')
     var valid = ref(false)
 
+    const data = ref({
+        magazine_name:  "",
+        year_of_issue: "",
+        month_select: "",
+        airline_select: ""
+    })
+
+    const rules = {magazine_name: {required}, year_of_issue: {required, minValue: minValue(1914), maxValue: maxValue(2025)}, month_select: {required}, airline_select: {required}}
+    const v$ = useVuelidate(rules, data)
 
     onMounted(async () => {
     var countries = await axios.get('http://localhost:3003/countries')
@@ -95,24 +89,27 @@
     month_list.value = months.data
   })
 
-    function send(){
-        console.log("Sent!")
-        console.log(airline_select.value)
-        status.value = "Your entry has been successfully added!"
+    async function send(){
+        const result = await v$.value.$validate()
 
-        // status.value = "Your entry has been added to the database. You can use the query tool above to find your entry."
-        // console.log(`You just added the country: ${magazine_name.value }.`)
-       
-        axios.post('http://localhost:3003/entry2', {magazine_name: magazine_name.value, month : month_select.value.id, year: year_of_issue.value, airline_id : airline_select.value.airline_id}
-        )
-        .then(function (response) {
-        console.log(response);
-        })
-        .catch(function (error) {
-        console.log(error);
-        });  
+        if (result){
+            status.value = "Your entry has been successfully added!"      
+            axios.post('http://localhost:3003/entry2', {magazine_name: data.value.magazine_name.trim(), month : data.value.month_select.id, year: data.value.year_of_issue, airline_id : data.value.airline_select.airline_id}
+            )
+            .then(function (response) {
+            console.log(response);
+            location.reload()
+            })
+            .catch(function (error) {
+            console.log(error);
+            });  
+        }
+        else{
+            console.log(result)
+            alert("Error: Fill out the form correctly.")
+            status.value = "Please try again." 
+        }
     }
-
 
   </script>
   

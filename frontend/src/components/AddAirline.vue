@@ -3,7 +3,6 @@
     <template v-slot:activator="{ props: activatorProps }">
         <v-btn
         v-bind="activatorProps"
-        color="surface-variant"
         text="Add Airline"
         variant="flat"
         ></v-btn>
@@ -14,12 +13,10 @@
         <v-card-text>
         <v-form v-model="valid">
         
-            Please provide the name of the airline and country of origin to add it to the database.
-
-            <v-text-field v-model = airline_select label="Name of Airline"></v-text-field>
+            <v-text-field v-model = data.airline_select label="Name of Airline"></v-text-field>
 
             <v-combobox
-                v-model="country_select"
+                v-model="data.country_select"
                 :items="country_list"
                 label="Country of Origin"
                 item-value="id"
@@ -37,16 +34,9 @@
             <v-spacer></v-spacer>
 
             <v-btn
-            text="Close Dialog"
-            @click="isActive.value = false"
-            ></v-btn>
-
-            <v-btn
             text="Add"
             @click="send"
             ></v-btn>
-
-            
 
         </v-card-actions>
         </v-card>
@@ -58,42 +48,44 @@
     //
     import { ref, onMounted} from 'vue'
     import axios from 'axios'
+    import useVuelidate from '@vuelidate/core';
+    import {required} from '@vuelidate/validators';
 
     // creating reactive variables 
-    var airline_name = ref('')
-    // var magazine_name = ref('')
-    // var month_of_issue = ref('')
-    // var year_of_issue = ref('')
-    // var airline_list = ref([])
     var country_list = ref([])
-    // var month_list = ref([])
-    var country_select = ref('')
-    var airline_select = ref('')
-    // var month_select = ref('')
     var status = ref('')
     var valid = ref(false)
-
+    const data = ref({country_select: "", airline_select: ""})
+    const rules = {country_select: {required}, airline_select: {required}}
+    const v$ = useVuelidate(rules, data)
 
     onMounted(async () => {
     var countries = await axios.get('http://localhost:3003/countries')
     country_list.value = countries.data
   })
 
-    function send(){
-        // console.log("Sent!")
-        // console.log(airline_select.value)
-        status.value = "You have successfully added an airline to this database."
-      
-        axios.post('http://localhost:3003/addairline', {airline_name: airline_select.value, country_id: country_select.value.id}
-        )
-        .then(function (response) {
-        console.log(response);
-        })
-        .catch(function (error) {
-        console.log(error);
-        });  
-    }
+    async function send(){
+        const result = await v$.value.$validate()
 
+        if (result){
+            status.value = "You have successfully added an airline to this database."
+      
+            axios.post('http://localhost:3003/addairline', {airline_name: data.value.airline_select, country_id: data.value.country_select.id}
+            )
+            .then(function (response) {
+            console.log(response);
+            location.reload()
+            })
+            .catch(function (error) {
+            console.log(error);
+            });  
+        }
+
+        else{
+            alert("Error: Fill out the form correctly.")
+            status.value = "Please try again." 
+        }
+    }
 
   </script>
   
