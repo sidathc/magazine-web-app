@@ -16,6 +16,7 @@
     <v-card-title class="text-h6">VIEW DATABASE ENTRIES</v-card-title>
 
       <v-row no-gutters>
+        
       <v-col order="1">
         <v-sheet class="pa-2 ma-2">
       <v-combobox
@@ -30,20 +31,54 @@
       </v-combobox>
         </v-sheet>
       </v-col>
+
       <v-col order="2">
         <v-sheet class="pa-2 ma-2">
+      <v-combobox
+        label="Select an Airline"
+        v-model="select_airline"
+        :items="airline_list"
+        item-value="airline_id"
+        item-title="airline_name"
+        :return-object="true"
+        clearable
+      >
+      </v-combobox>
+        </v-sheet>
+      </v-col>
+
+      <v-col order="3">
+        <v-sheet class="pa-2 ma-2">
+          <v-text-field v-model= "year_select" label="Year" clearable></v-text-field>
+        </v-sheet>
+      </v-col>
+
+      <v-col order="4">
+        <v-sheet class="pa-2 ma-2">
+          <v-text-field v-model= "magazine_select" label="Magazine Name" clearable></v-text-field>
+        </v-sheet>
+      </v-col>
+
+      <v-col order="5">
+        <v-sheet class="pa-2 ma-2">
           <v-btn
-          size="large" 
+          size="x-large" 
           @click="submit"
           text="View Records">
-        
         </v-btn>
         </v-sheet>
       </v-col>
+
     </v-row>
 
+
+
+
+
+
+
     <v-row>
-      <v-col order="5">
+      <v-col order="1">
         <v-sheet class="pa-2 ma-2">
           <v-data-table 
           :items="results_array"
@@ -67,6 +102,9 @@
   var country_list = ref([''])
   var results_array = ref([])
   var airline_list = ref([])
+  var select_airline = ref('')
+  var year_select = ref('')
+  var magazine_select = ref('')
 
   const headers = [
   {key: 'magazine_id', title: 'ID'},
@@ -86,7 +124,9 @@
   })
 
   function submit(){
-    const article = {country_id: select.value.id}
+    const article = {country_id: select.value.id, airline_id: select_airline.value.airline_id, year: Number(year_select.value), magazine_name : magazine_select.value}
+    console.log(article);
+    const article2 = {country_id: select.value.id}
     
     axios.get('http://localhost:3003/funny', {params: article})
       .then(function (response) {

@@ -33,7 +33,16 @@ app.get('/funny', async (req, res) => {
     res.header("Access-Control-Allow-Origin", "*"); 
     // console.log(req.query.country_id);
     // res.send("success");
-    results = await query(req.query.country_id)
+    var country_id = req.query.country_id
+    var airline_id = req.query.airline_id
+    var year = req.query.year
+    var magazine_name = req.query.magazine_name
+
+    if (year == 0){
+        year = undefined
+    }
+    console.log(country_id, airline_id, year)
+    results = await query(country_id, airline_id, year, magazine_name)
     // console.log(results);
     res.send(results)
 }) 
@@ -172,13 +181,49 @@ async function connectToSQL(query_name)  {
     return json_ver;
 }
 
-async function query(country_id) {
+async function query(country_id, airline_id, year, magazine_name) {
     if (country_id == 25){
         query_name = 'SELECT * FROM magazine'
+        if (airline_id != undefined){
+            query_name += ' WHERE airline_id = ' + airline_id
+        }
     }
     else{
-        query_name = 'SELECT * FROM magazine WHERE country_id = ' + country_id
+        query_name = 'SELECT * FROM magazine WHERE'
+        
+        if (country_id != undefined){
+            query_name += ' country_id = ' + country_id
+        }
+
+        if (airline_id != undefined){
+            if (country_id == undefined){
+                query_name += ' airline_id = ' + airline_id
+            }
+            else{
+                query_name += ' AND airline_id = ' + airline_id
+            }
+            
+        }
+        
+        if (year != undefined){
+            if (airline_id != undefined || country_id != undefined){
+                query_name += ' AND publication_year = ' + year
+            }
+            else{
+                query_name += ' publication_year = ' + year
+            }
+        }
+
+        if (magazine_name != undefined){
+            if (airline_id != undefined || country_id != undefined || year != undefined){
+                query_name += ` AND magazine_name LIKE '%` + magazine_name + `%'`
+            }
+            else{
+                query_name += ` magazine_name LIKE '%` + magazine_name + `%'`
+            }
+        }
     }
+    console.log(query_name)
 
     const client = new Client({
         user: 'postgres',
@@ -212,9 +257,6 @@ async function query(country_id) {
         var country_name = await find_country(what[i]['country_id'])
         what[i]['country_id'] = country_name
     }
-
-    // find_airline(what[0]['airline_id'])
-
     var json_ver = JSON.stringify(what);
     return json_ver
 }
