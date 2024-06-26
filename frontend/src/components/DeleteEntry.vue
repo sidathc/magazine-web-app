@@ -63,27 +63,23 @@
     import {required} from '@vuelidate/validators';
 
     // creating reactive variables 
-    // var magazine_name = ref('')
-    // var year_of_issue = ref('')
-    var airline_list = ref([])
-    var country_list = ref([])
-    var month_list = ref([])
-    // var airline_select = ref('')
-    // var month_select = ref('')
-    var status = ref('')
-    var valid = ref(false)
+    const airline_list = ref([])
+    const country_list = ref([])
+    const month_list = ref([])
+    const status = ref('')
+    const valid = ref(false)
     const data = ref({magazine_name: ""}, {year_of_issue: ""}, {airline_select: ""}, {month_select: ""})
     const rules = {magazine_name: {required}, year_of_issue: {required}, airline_select: {required}, month_select: {required}}
     const v$ = useVuelidate(rules, data)
 
     onMounted(async () => {
-    var countries = await axios.get('http://localhost:3003/countries')
+    const countries = await axios.get('http://localhost:3003/countries')
     country_list.value = countries.data
 
-    var airlines = await axios.get('http://localhost:3003/airlines')
+    const airlines = await axios.get('http://localhost:3003/airlines')
     airline_list.value = airlines.data
 
-    var months = await axios.get('http://localhost:3003/months')
+    const months = await axios.get('http://localhost:3003/months')
     month_list.value = months.data
   })
 
@@ -92,7 +88,7 @@
 
         if (result){
             status.value = "Your entry has been successfully deleted!"
-            axios.post('http://localhost:3003/delete', {magazine_name: data.value.magazine_name, month : data.value.month_select.id, year: data.value.year_of_issue, airline_id : data.value.airline_select.airline_id}
+            axios.post('http://localhost:3003/delete-entry', {magazine_name: data.value.magazine_name, month : data.value.month_select.id, year: data.value.year_of_issue, airline_id : data.value.airline_select.airline_id}
             )
             .then(function (response) {
             console.log(response);
@@ -106,9 +102,7 @@
             alert("Error: Fill out the form correctly.")
             status.value = "Please try again." 
         }
-
     }
-
 
   </script>
   

@@ -62,11 +62,11 @@
     import {minValue, required, maxValue} from '@vuelidate/validators';
 
     // creating reactive variables 
-    var airline_list = ref([])
-    var country_list = ref([])
-    var month_list = ref([])
-    var status = ref('')
-    var valid = ref(false)
+    const airline_list = ref([])
+    const country_list = ref([])
+    const month_list = ref([])
+    const status = ref('')
+    const valid = ref(false)
 
     const data = ref({
         magazine_name:  "",
@@ -79,13 +79,13 @@
     const v$ = useVuelidate(rules, data)
 
     onMounted(async () => {
-    var countries = await axios.get('http://localhost:3003/countries')
+    const countries = await axios.get('http://localhost:3003/countries')
     country_list.value = countries.data
 
-    var airlines = await axios.get('http://localhost:3003/airlines')
+    const airlines = await axios.get('http://localhost:3003/airlines')
     airline_list.value = airlines.data
 
-    var months = await axios.get('http://localhost:3003/months')
+    const months = await axios.get('http://localhost:3003/months')
     month_list.value = months.data
   })
 
@@ -94,7 +94,7 @@
 
         if (result){
             status.value = "Your entry has been successfully added!"      
-            axios.post('http://localhost:3003/entry2', {magazine_name: data.value.magazine_name.trim(), month : data.value.month_select.id, year: data.value.year_of_issue, airline_id : data.value.airline_select.airline_id}
+            axios.post('http://localhost:3003/add-entry', {magazine_name: data.value.magazine_name.trim(), month : data.value.month_select.id, year: data.value.year_of_issue, airline_id : data.value.airline_select.airline_id}
             )
             .then(function (response) {
             console.log(response);

@@ -6,6 +6,13 @@ Instructions
 
 2. Go to localhost:5050 and login with your PgAdmin credentials.
 
+### Make sure the following packages are installed:
+`1. Backend`  
+cors, express, pg
+
+`2. Frontend`  
+vuelidate/core, vuelidate/validators, vue, vuetify
+
 ### Running the Backend
 `cd backend`  
 `node app.js`

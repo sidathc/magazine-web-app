@@ -52,15 +52,15 @@
     import {required} from '@vuelidate/validators';
 
     // creating reactive variables 
-    var country_list = ref([])
-    var status = ref('')
-    var valid = ref(false)
+    const country_list = ref([])
+    const status = ref('')
+    const valid = ref(false)
     const data = ref({country_select: "", airline_select: ""})
     const rules = {country_select: {required}, airline_select: {required}}
     const v$ = useVuelidate(rules, data)
 
     onMounted(async () => {
-    var countries = await axios.get('http://localhost:3003/countries')
+    const countries = await axios.get('http://localhost:3003/countries')
     country_list.value = countries.data
   })
 
@@ -70,7 +70,7 @@
         if (result){
             status.value = "You have successfully added an airline to this database."
       
-            axios.post('http://localhost:3003/addairline', {airline_name: data.value.airline_select, country_id: data.value.country_select.id}
+            axios.post('http://localhost:3003/add-airline', {airline_name: data.value.airline_select, country_id: data.value.country_select.id}
             )
             .then(function (response) {
             console.log(response);

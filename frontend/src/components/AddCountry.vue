@@ -42,8 +42,8 @@
     import {required} from '@vuelidate/validators';
 
     // creating reactive variables 
-    var status = ref('')
-    var valid = ref(false)
+    const status = ref('')
+    const valid = ref(false)
     const data = ref({country_select: ""})
     const rules = {country_select: {required}}
     const v$ = useVuelidate(rules, data)
@@ -53,7 +53,7 @@
 
         if (result){
             status.value = "You have successfully added a new country to this database."
-            axios.post('http://localhost:3003/addcountry', {country_name: data.value.country_select}
+            axios.post('http://localhost:3003/add-country', {country_name: data.value.country_select}
             )
             .then(function (response) {
             console.log(response);

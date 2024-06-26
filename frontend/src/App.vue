@@ -71,12 +71,6 @@
 
     </v-row>
 
-
-
-
-
-
-
     <v-row>
       <v-col order="1">
         <v-sheet class="pa-2 ma-2">
@@ -98,13 +92,13 @@
   import { ref, onMounted} from 'vue'
   import axios from 'axios'
 
-  var select = ref('')
-  var country_list = ref([''])
-  var results_array = ref([])
-  var airline_list = ref([])
-  var select_airline = ref('')
-  var year_select = ref('')
-  var magazine_select = ref('')
+  const select = ref('')
+  const country_list = ref([''])
+  const results_array = ref([])
+  const airline_list = ref([])
+  const select_airline = ref('')
+  const year_select = ref('')
+  const magazine_select = ref('')
 
   const headers = [
   {key: 'magazine_id', title: 'ID'},
@@ -116,19 +110,17 @@
 ]
 
   onMounted(async () => {
-    var countries = await axios.get('http://localhost:3003/countries')
+    const countries = await axios.get('http://localhost:3003/countries')
     country_list.value = countries.data
 
-    var airlines = await axios.get('http://localhost:3003/airlines')
+    const airlines = await axios.get('http://localhost:3003/airlines')
     airline_list.value = airlines.data
   })
 
   function submit(){
     const article = {country_id: select.value.id, airline_id: select_airline.value.airline_id, year: Number(year_select.value), magazine_name : magazine_select.value}
-    console.log(article);
-    const article2 = {country_id: select.value.id}
     
-    axios.get('http://localhost:3003/funny', {params: article})
+    axios.get('http://localhost:3003/results', {params: article})
       .then(function (response) {
       results_array.value = response.data
       console.log(results_array.value)
